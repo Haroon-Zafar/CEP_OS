@@ -43,6 +43,18 @@ class thread_three(threading.Thread):
         mutex.release()
 
 
+def generateRandomItems():
+    item1 = random.randint(1, 100)
+    item2 = random.randint(1, 100)
+    item1 %= 3
+    item2 %= 3
+    if (item1 == item2):
+        item2 += 1
+        item2 %= 3
+    itemList = [item1, item2]
+    return itemList
+
+
 mutex.acquire()
 t1 = thread_one()
 t2 = thread_two()
