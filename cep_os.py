@@ -2,6 +2,12 @@ import threading
 import time
 import random
 
+
+isTobacco = False
+isMatch = False
+isPaper = False
+
+
 mutex = threading.Lock()
 ingredientsList = ["tobacco", "paper", "matches"]
 
@@ -89,43 +95,95 @@ def smokerMatch():
 
 
 def conditionCheck():
-    print("Ingredients list", ingredientsList)
+
+    global isTobacco, isMatch, isPaper
+
     varItemsOnTable = itemsOnTable()
-    if smokerTobacco() in varItemsOnTable:
-        print("I have match for Tobacco",)
+    print(smokerMatch(),
+          smokerTobacco(),
+          smokerPaper())
+
+    if smokerTobacco() not in varItemsOnTable:
+        print("I don't have match for Tobacco")
+        isTobacco = True
+        return (isTobacco)
+
         # print(itemsOnTable())
 
-    if smokerMatch() in varItemsOnTable:
-        print("I have match for Matches",)
+    if smokerPaper() not in varItemsOnTable:
+        print("I don't have match for Paper")
+        isPaper = True
+        return (isPaper)
+
         # print(itemsOnTable())
 
-    if smokerPaper() in varItemsOnTable:
-        print("I have match for Paper",)
+    if smokerMatch() not in varItemsOnTable:
+        print("I don't have match for Matches")
+        isMatch = True
+        return (isMatch)
+
         # print(itemsOnTable())
 
-# mutex.acquire()
-# t1 = thread_one()
-# t2 = thread_two()
-# t3 = thread_three()
-# print(threading.active_count())
-# t1.start()
-# t2.start()
-# t3.start()
-# print("\n", threading.active_count())
 
-# separately generating items on table
-# a = generateRandomItems()
-# print(a)
+def threads():
+    t1 = thread_one()
+    t2 = thread_two()
+    t3 = thread_three()
+
+    t1.start()
+    t2.start()
+    t3.start()
+
+    return ("")
 
 
-# b = itemsOnTable()
-# print(b)
+def executionMutex(ingredientBoolean):
+
+    global isPaper, isTobacco, isMatch
+    global mutex
+    mutex.acquire()
+
+    print(isTobacco, isPaper, isMatch)
+    if isTobacco == True:
+        print("Process Tobacco will run")
+        # isTobacco = False
+
+    if isPaper == True:
+        print("Process Paper will run")
+
+    if isMatch == True:
+        print("Process Match will run")
+
+    mutex.acquire()
+    if ingredientBoolean == True:
+        print("I have the ingredient")
+        mutex.release()
+        return (True)
+    else:
+        print("I don't have the ingredient")
+        mutex.release()
+        return (True)
+
+    # mutex.acquire()
+    # t1 = thread_one()
+    # t2 = thread_two()
+    # t3 = thread_three()
+    # print(threading.active_count())
+    # t1.start()
+    # t2.start()
+    # t3.start()
+
+    # print("\n", threading.active_count())
+    # separately generating items on table
+    # a = generateRandomItems()
+    # print(a)
+    # b = itemsOnTable()
+    # print(b)
+    # smoker1 = smokerTobacco()
+    # smoker2 = smokerPaper()
+    # smoker3 = smokerMatch()
+    # print(smoker1, smoker2, smoker3)
 
 
-# smoker1 = smokerTobacco()
-# smoker2 = smokerPaper()
-# smoker3 = smokerMatch()
-
-# print(smoker1, smoker2, smoker3)
-
-conditionCheck()
+a = executionMutex(conditionCheck())
+print(a)
