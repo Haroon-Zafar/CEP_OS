@@ -3,6 +3,7 @@ import time
 import random
 
 mutex = threading.Lock()
+ingredientsList = ["tobacco", "paper", "matches"]
 
 
 class thread_one(threading.Thread):
@@ -44,23 +45,38 @@ class thread_three(threading.Thread):
 
 
 def generateRandomItems():
-    item1 = random.randint(1, 100)
-    item2 = random.randint(1, 100)
-    item1 %= 3
-    item2 %= 3
+    item1 = random.randint(0, 2)
+    item2 = random.randint(0, 2)
     if (item1 == item2):
-        item2 += 1
-        item2 %= 3
+        item2 = item2 + 1
     itemList = [item1, item2]
     return itemList
 
 
-mutex.acquire()
-t1 = thread_one()
-t2 = thread_two()
-t3 = thread_three()
-print(threading.active_count())
-t1.start()
-t2.start()
-t3.start()
-print("\n", threading.active_count())
+def itemsOnTable():
+    global mutex
+    mutex.acquire()
+    generatedNumbersList = generateRandomItems()
+    for i in generatedNumbersList:
+        print("Items on table:", ingredientsList[i])
+    mutex.release()
+    return ""
+
+
+# mutex.acquire()
+# t1 = thread_one()
+# t2 = thread_two()
+# t3 = thread_three()
+# print(threading.active_count())
+# t1.start()
+# t2.start()
+# t3.start()
+# print("\n", threading.active_count())
+
+# separately generating items on table
+# a = generateRandomItems()
+# print(a)
+
+
+b = itemsOnTable()
+print(b)
