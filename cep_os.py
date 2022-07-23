@@ -45,10 +45,15 @@ class thread_three(threading.Thread):
 
 
 def generateRandomItems():
+
     item1 = random.randint(0, 2)
     item2 = random.randint(0, 2)
     if (item1 == item2):
-        item2 = item2 + 1
+        while (True):
+            item2 = random.randint(0, 2)
+            if (item1 != item2):
+                break
+
     itemList = [item1, item2]
     return itemList
 
@@ -57,11 +62,46 @@ def itemsOnTable():
     global mutex
     mutex.acquire()
     generatedNumbersList = generateRandomItems()
+    tableItemsList = []
     for i in generatedNumbersList:
         print("Items on table:", ingredientsList[i])
+        tableItemsList.append(ingredientsList[i])
     mutex.release()
-    return ""
+    return (tableItemsList)
 
+
+def smokerTobacco():
+    haveIngredient = "tobacco"
+    # print("I have ", end="")
+    return (haveIngredient)
+
+
+def smokerPaper():
+    haveIngredient = "paper"
+    # print("I have ", end="")
+    return (haveIngredient)
+
+
+def smokerMatch():
+    haveIngredient = "match"
+    # print("I have ", end="")
+    return (haveIngredient)
+
+
+def conditionCheck():
+    print("Ingredients list", ingredientsList)
+    varItemsOnTable = itemsOnTable()
+    if smokerTobacco() in varItemsOnTable:
+        print("I have match for Tobacco",)
+        # print(itemsOnTable())
+
+    if smokerMatch() in varItemsOnTable:
+        print("I have match for Matches",)
+        # print(itemsOnTable())
+
+    if smokerPaper() in varItemsOnTable:
+        print("I have match for Paper",)
+        # print(itemsOnTable())
 
 # mutex.acquire()
 # t1 = thread_one()
@@ -78,5 +118,14 @@ def itemsOnTable():
 # print(a)
 
 
-b = itemsOnTable()
-print(b)
+# b = itemsOnTable()
+# print(b)
+
+
+# smoker1 = smokerTobacco()
+# smoker2 = smokerPaper()
+# smoker3 = smokerMatch()
+
+# print(smoker1, smoker2, smoker3)
+
+conditionCheck()
