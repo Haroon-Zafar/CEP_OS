@@ -134,7 +134,7 @@ def conditionCheck():
           smokerPaper())
 
     if smokerTobacco() not in varItemsOnTable:
-        print("I don't have match for Tobacco")
+        print("Smoker having Tobacco is not on table so it's Process will be called to make the combination of cigarette")
         isTobacco = True
 
         return (isTobacco)
@@ -142,7 +142,7 @@ def conditionCheck():
         # print(itemsOnTable())
 
     if smokerPaper() not in varItemsOnTable:
-        print("I don't have match for Paper")
+        print("Smoker having Paper is not on table so it's Process will be called to make the combination of cigarette")
         isPaper = True
 
         return (isPaper)
@@ -150,7 +150,7 @@ def conditionCheck():
         # print(itemsOnTable())
 
     if smokerMatch() not in varItemsOnTable:
-        print("I don't have match for Matches")
+        print("Smoker having Match is not on table so it's Process will be called to make the combination of cigarette")
         isMatch = True
 
         return (isMatch)
