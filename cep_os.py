@@ -1,53 +1,82 @@
+
 import threading
 import time
 import random
-
+# import thread
 
 isTobacco = False
 isMatch = False
 isPaper = False
 
 
-mutex = threading.Lock()
 ingredientsList = ["tobacco", "paper", "matches"]
 
+mutex = threading.Lock()
 
-class thread_one(threading.Thread):
+
+class thread_tobacco(threading.Thread):
     def run(self):
         global mutex
-        print("Time of first thread", time.strftime(
-            "%H:%M:%S", time.localtime()))
-        print("The first thread is now sleeping")
-        time.sleep(random.randint(1, 3))
-        print("First thread is finished")
-        mutex.release()
-        print("Time of release of first thread",
-              time.strftime("%H:%M:%S", time.localtime()))
 
+        print()
+        print("Tobacco Thread is waiting")
 
-class thread_two(threading.Thread):
-    def run(self):
-        global mutex
-        print("Time of second thread", time.strftime(
-            "%H:%M:%S", time.localtime()))
-        print("The second thread is now sleeping")
-        time.sleep(random.randint(1, 3))
         mutex.acquire()
-        print("Second thread is finished")
+        if(isTobacco):
+            print("The Tobacco thread has now locked the process")
+
+            # timeToSleep = random.randint(1, 5)
+            timeToSleep = 3
+            time.sleep(timeToSleep)
+
+            # time.sleep(random.randint(1, 5))
+
         mutex.release()
-        print("Time of release of second thread",
-              time.strftime("%H:%M:%S", time.localtime()))
+
+        print("Tobacco thread is finished")
+        print()
 
 
-class thread_three(threading.Thread):
+class thread_paper(threading.Thread):
     def run(self):
         global mutex
-        print("Time of third thread", time.strftime(
-            "%H:%M:%S", time.localtime()))
-        time.sleep(random.randint(1, 3))
+        # timeToSleep = random.randint(1, 5)
+        print()
+        print("Paper Thread is waiting")
         mutex.acquire()
-        print("Third thread is finished")
+
+        if(isPaper):
+            print("The Paper thread has now locked the process")
+
+            timeToSleep = 3
+            time.sleep(timeToSleep)
+
         mutex.release()
+        print("Paper thread is finished")
+        print()
+
+
+class thread_match(threading.Thread):
+    def run(self):
+        global mutex
+        # timeToSleep = random.randint(1, 5)
+        print()
+        print("Match Thread is waiting")
+
+        mutex.acquire()
+        if(isMatch):
+            print("The Match thread has now locked the process")
+
+            timeToSleep = 3
+            time.sleep(timeToSleep)
+
+        mutex.release()
+        print("Match thread is finished")
+
+
+t1_tobacco = thread_tobacco()
+t2_paper = thread_paper()
+t3_match = thread_match()
 
 
 def generateRandomItems():
@@ -66,13 +95,13 @@ def generateRandomItems():
 
 def itemsOnTable():
     global mutex
-    mutex.acquire()
+    # mutex.acquire()
     generatedNumbersList = generateRandomItems()
     tableItemsList = []
     for i in generatedNumbersList:
         print("Items on table:", ingredientsList[i])
         tableItemsList.append(ingredientsList[i])
-    mutex.release()
+    # mutex.release()
     return (tableItemsList)
 
 
@@ -99,6 +128,7 @@ def conditionCheck():
     global isTobacco, isMatch, isPaper
 
     varItemsOnTable = itemsOnTable()
+
     print(smokerMatch(),
           smokerTobacco(),
           smokerPaper())
@@ -106,6 +136,7 @@ def conditionCheck():
     if smokerTobacco() not in varItemsOnTable:
         print("I don't have match for Tobacco")
         isTobacco = True
+
         return (isTobacco)
 
         # print(itemsOnTable())
@@ -113,6 +144,7 @@ def conditionCheck():
     if smokerPaper() not in varItemsOnTable:
         print("I don't have match for Paper")
         isPaper = True
+
         return (isPaper)
 
         # print(itemsOnTable())
@@ -120,19 +152,37 @@ def conditionCheck():
     if smokerMatch() not in varItemsOnTable:
         print("I don't have match for Matches")
         isMatch = True
+
         return (isMatch)
 
-        # print(itemsOnTable())
+    # threads()
+
+    # print(itemsOnTable())
 
 
 def threads():
-    t1 = thread_one()
-    t2 = thread_two()
-    t3 = thread_three()
+    commonMethod()
+    if(isTobacco):
+        t1_tobacco.start()
+        t2_paper.start()
+        t3_match.start()
 
-    t1.start()
-    t2.start()
-    t3.start()
+    if(isPaper):
+        t2_paper.start()
+        t1_tobacco.start()
+        t3_match.start()
+
+    if(isMatch):
+        t3_match.start()
+        t1_tobacco.start()
+        t2_paper.start()
+
+    print("Total Number of Running Threads: ", threading.active_count())
+
+    t1_tobacco.join()
+    t2_paper.join()
+    t3_match.join()
+    print("bye")
 
     return ("")
 
@@ -141,28 +191,50 @@ def executionMutex(ingredientBoolean):
 
     global isPaper, isTobacco, isMatch
     global mutex
-    mutex.acquire()
+    # mutex.acquire()
 
+    threads()
+
+    # mutex.release()
+
+    return (True)
+
+
+def commonMethod():
+    global mutex
+    global t1_tobacco, t2_paper, t3_match
+
+    # mutex.acquire()
     print(isTobacco, isPaper, isMatch)
+
     if isTobacco == True:
         print("Process Tobacco will run")
+        # t2_paper.join()
+        # t3_match.join()
+
+        # cigaretteMaking()
         # isTobacco = False
 
     if isPaper == True:
         print("Process Paper will run")
+        # cigaretteMaking()
+        # t1_tobacco.join()
+        # t3_match.join()
 
     if isMatch == True:
         print("Process Match will run")
+        # cigaretteMaking()
+        # t1_tobacco.join()
+        # t2_paper.join()
 
-    mutex.acquire()
-    if ingredientBoolean == True:
-        print("I have the ingredient")
-        mutex.release()
-        return (True)
-    else:
-        print("I don't have the ingredient")
-        mutex.release()
-        return (True)
+    # mutex.release()
+
+
+def cigaretteMaking():
+
+    print("I am making a cigarette")
+    print("Cigarette has been Made")
+    return (True)
 
     # mutex.acquire()
     # t1 = thread_one()
@@ -185,5 +257,27 @@ def executionMutex(ingredientBoolean):
     # print(smoker1, smoker2, smoker3)
 
 
-a = executionMutex(conditionCheck())
-print(a)
+# def Agent():
+#     a = executionMutex(conditionCheck())
+#     print(a)
+
+
+# Agent()
+
+
+# mutex.acquire()
+# threads()
+# t1 = thread_one()
+# t2 = thread_two()
+# t3 = thread_three()
+varItemsOnTable = conditionCheck()
+a = executionMutex(varItemsOnTable)
+# commonMethod()
+# # print(a)
+
+
+# t1.start()
+# t2.start()
+# t3.start()
+
+# print(threading.active_count())
